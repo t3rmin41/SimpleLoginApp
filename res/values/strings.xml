@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SimpleLoginApp</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="login_here">Already Registered?\nLogin Here</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Login</string>
+    <string name="logout_button">Logout</string>
+    <string name="text_id">ID</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="email">Email</string>
+
+</resources>

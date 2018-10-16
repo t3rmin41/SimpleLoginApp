@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="128dp"
+        android:orientation="vertical"
+        android:padding="10dp" >
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="131dp"
+        android:ems="10"
+        android:hint="@string/email_hint"
+        android:inputType="text" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/emailEditText"
+        android:layout_centerVertical="true"
+        android:ems="10"
+        android:hint="@string/password_hint"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/passwordEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
+        android:text="@string/login_button" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/passwordEditText"
+        android:layout_alignRight="@+id/emailEditText"
+        android:layout_below="@+id/loginButton"
+        android:layout_marginTop="25dp" />
+
+</RelativeLayout>

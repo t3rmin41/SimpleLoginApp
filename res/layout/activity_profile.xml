@@ -1,0 +1,102 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical" >
+
+    </LinearLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical" >
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/textViewFieldId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/text_id" />
+
+            <TextView
+                android:id="@+id/textViewId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="1" />
+        </TableRow>
+        
+        <TableRow>
+
+            <TextView
+                android:id="@+id/textViewFieldEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/email" />
+
+            <TextView
+                android:id="@+id/textViewEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="1" />
+        </TableRow>
+        
+        <TableRow>
+
+            <TextView
+                android:id="@+id/textViewFieldFirstName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/first_name" />
+
+            <TextView
+                android:id="@+id/textViewFirstName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="1" />
+        </TableRow>
+        
+        <TableRow>
+            <TextView
+                android:id="@+id/textViewFieldLastName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/last_name" />
+
+            <TextView
+                android:id="@+id/textViewLastName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="1" />
+        </TableRow>
+        
+    </TableLayout>
+
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/linearLayout1"
+        android:layout_centerHorizontal="true"
+        android:text="@string/logout_button" />
+
+</RelativeLayout>
