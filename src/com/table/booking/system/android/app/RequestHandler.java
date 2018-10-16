@@ -59,7 +59,6 @@ public class RequestHandler {
       return sb.toString();
   }
 
-
   //this method is converting keyvalue pairs data into a query string as needed to send to the server 
   private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
       StringBuilder result = new StringBuilder();
