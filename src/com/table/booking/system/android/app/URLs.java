@@ -1,6 +1,6 @@
 package com.table.booking.system.android.app;
 
-public interface URL {
+public interface URLs {
 
   static final String ROOT_URL = "https://table-booking-system-api.herokuapp.com";
   static final String URL_LOGIN = ROOT_URL+"/users/login";

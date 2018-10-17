@@ -74,7 +74,6 @@ public class LoginActivity extends Activity {
             super.onPostExecute(s);
             progressBar.setVisibility(View.GONE);
 
-
             try {
                 //converting response to json object
                 JSONObject obj = new JSONObject(s);
@@ -119,7 +118,7 @@ public class LoginActivity extends Activity {
             params.put("password", password);
 
             //returing the response
-            return requestHandler.sendPostRequest(URL.URL_LOGIN, params);
+            return requestHandler.sendPostRequest(URLs.URL_LOGIN, params);
         }
     }
 
