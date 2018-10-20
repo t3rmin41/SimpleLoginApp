@@ -26,4 +26,3 @@ hs_err_pid*
 #Android development tools
 proguard-project.txt
 project.properties
-gen/
