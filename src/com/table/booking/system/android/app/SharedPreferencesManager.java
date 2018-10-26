@@ -3,8 +3,9 @@ package com.table.booking.system.android.app;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
-public class SharedPrefManager {
+public class SharedPreferencesManager {
 
   private static final String SHARED_PREF_NAME = "simpleloginsharedpref";
   private static final String KEY_FIRSTNAME = "keyfirstname";
@@ -12,24 +13,25 @@ public class SharedPrefManager {
   private static final String KEY_EMAIL = "keyemail";
   private static final String KEY_ID = "keyid";
 
-  private static SharedPrefManager mInstance;
+  private static SharedPreferencesManager managerInstance;
+  private static SharedPreferences sharedPreferences;
   private static Context mCtx;
   
-  private SharedPrefManager(Context context) {
+  private SharedPreferencesManager(Context context) {
     mCtx = context;
+    sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
 }
 
-  public static synchronized SharedPrefManager getInstance(Context context) {
-    if (mInstance == null) {
-        mInstance = new SharedPrefManager(context);
+  public static synchronized SharedPreferencesManager getInstance(Context context) {
+    if (managerInstance == null) {
+        managerInstance = new SharedPreferencesManager(context);
     }
-    return mInstance;
+    return managerInstance;
   }
 
   //method to let the user login
   //this method will store the user data in shared preferences
   public void userLogin(User user) {
-    SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
     SharedPreferences.Editor editor = sharedPreferences.edit();
     editor.putLong(KEY_ID, user.getId());
     editor.putString(KEY_FIRSTNAME, user.getFirstName());
@@ -40,13 +42,11 @@ public class SharedPrefManager {
 
   //this method will checker whether user is already logged in or not
   public boolean isLoggedIn() {
-    SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
     return sharedPreferences.getString(KEY_EMAIL, null) != null;
   }
 
   //this method will give the logged in user
   public User getUser() {
-    SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
     return new User(
             sharedPreferences.getLong(KEY_ID, -1),
             sharedPreferences.getString(KEY_EMAIL, null),
@@ -57,7 +57,6 @@ public class SharedPrefManager {
 
   //this method will logout the user 
   public void logout() {
-    SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
     SharedPreferences.Editor editor = sharedPreferences.edit();
     editor.clear();
     editor.apply();

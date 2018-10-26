@@ -94,7 +94,7 @@ public class LoginActivity extends Activity {
                     );
 
                     //storing the user in shared preferences
-                    SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+                    SharedPreferencesManager.getInstance(getApplicationContext()).userLogin(user);
 
                     //starting the profile activity
                     finish();

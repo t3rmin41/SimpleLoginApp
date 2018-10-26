@@ -17,7 +17,7 @@ public class ProfileActivity extends Activity {
     
     //if the user is not logged in
     //starting the login activity
-    if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
+    if (!SharedPreferencesManager.getInstance(this).isLoggedIn()) {
         finish();
         startActivity(new Intent(this, LoginActivity.class));
     }
@@ -27,7 +27,7 @@ public class ProfileActivity extends Activity {
     textViewFirstName = (TextView) findViewById(R.id.textViewFirstName);
     textViewLastName = (TextView) findViewById(R.id.textViewLastName);
     
-    User user = SharedPrefManager.getInstance(this).getUser();
+    User user = SharedPreferencesManager.getInstance(this).getUser();
     
     textViewId.setText(String.valueOf(user.getId()));
     textViewEmail.setText(user.getEmail());
@@ -40,7 +40,7 @@ public class ProfileActivity extends Activity {
         @Override
         public void onClick(View view) {
             finish();
-            SharedPrefManager.getInstance(getApplicationContext()).logout();
+            SharedPreferencesManager.getInstance(getApplicationContext()).logout();
         }
     });
     
