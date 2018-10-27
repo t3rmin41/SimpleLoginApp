@@ -32,6 +32,7 @@ public class SharedPreferencesManager {
   //method to let the user login
   //this method will store the user data in shared preferences
   public void userLogin(User user) {
+	SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
     SharedPreferences.Editor editor = sharedPreferences.edit();
     editor.putLong(KEY_ID, user.getId());
     editor.putString(KEY_FIRSTNAME, user.getFirstName());
@@ -57,6 +58,7 @@ public class SharedPreferencesManager {
 
   //this method will logout the user 
   public void logout() {
+	SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
     SharedPreferences.Editor editor = sharedPreferences.edit();
     editor.clear();
     editor.apply();
