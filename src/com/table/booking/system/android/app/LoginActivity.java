@@ -20,6 +20,8 @@ public class LoginActivity extends Activity {
 
   EditText emailEditText, passwordEditText;
   
+  private RequestHandler requestHandler = new RequestHandler();
+  
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -28,18 +30,19 @@ public class LoginActivity extends Activity {
     emailEditText = (EditText) findViewById(R.id.emailEditText);
     passwordEditText = (EditText) findViewById(R.id.passwordEditText);
     
-    //if user presses on login
-    //calling the method login
+    //if user presses on 'loginButton' call userLogin()
     findViewById(R.id.loginButton).setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            userLogin();
+            if (userLogin()) {
+              getLoggedUserData();
+            }
         }
     });
 
   }
   
-  private void userLogin() {
+  private boolean userLogin() {
     //first getting the values
     final String email = emailEditText.getText().toString();
     final String password = passwordEditText.getText().toString();
@@ -48,17 +51,17 @@ public class LoginActivity extends Activity {
     if (TextUtils.isEmpty(email)) {
       emailEditText.setError("Please enter your email");
       emailEditText.requestFocus();
-      return;
+      return false;
     }
 
     if (TextUtils.isEmpty(password)) {
       passwordEditText.setError("Please enter your password");
       passwordEditText.requestFocus();
-      return;
+      return false;
     }
 
     //if everything is fine
-    class UserLogin extends AsyncTask<Void, Void, String> {
+    class UserLogin extends AsyncTask<String, String, String> {
 
         ProgressBar progressBar;
 
@@ -73,57 +76,81 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             progressBar.setVisibility(View.GONE);
-
-            try {
-                //converting response to json object
-                JSONObject obj = new JSONObject(s);
-
-                //if no error in response
-                if (!obj.getBoolean("error")) {
-                    Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-
-                    //getting the user from the response
-                    JSONObject userJson = obj.getJSONObject("user");
-
-                    //creating a new user object
-                    User user = new User(
-                            userJson.getLong("id"),
-                            userJson.getString("email"),
-                            userJson.getString("firstName"),
-                            userJson.getString("lastName")
-                    );
-
-                    //storing the user in shared preferences
-                    SharedPreferencesManager.getInstance(getApplicationContext()).userLogin(user);
-
-                    //starting the profile activity
-                    finish();
-                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-                } else {
-                    Toast.makeText(getApplicationContext(), "Invalid email or password", Toast.LENGTH_SHORT).show();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
         }
 
         @Override
-        protected String doInBackground(Void... voids) {
-            //creating request handler object
-            RequestHandler requestHandler = new RequestHandler();
-
-            //creating request parameters
-            HashMap<String, String> params = new HashMap<String, String>();
-            params.put("username", email);
-            params.put("password", password);
+        protected String doInBackground(String... args) {
+            UserCredentials credentials = new UserCredentials();
+            credentials.setEmail(email);
+            credentials.setPassword(password);
 
             //returing the response
-            return requestHandler.sendPostRequest(URLs.URL_LOGIN, params);
+            return requestHandler.sendLoginRequest(credentials);
         }
     }
 
     UserLogin ul = new UserLogin();
-    ul.execute();
-}
+    try {
+      ul.execute();
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      return false;
+    }
+    return true;
+  }
   
+  private void getLoggedUserData() {
+  
+    class GetUserData extends AsyncTask<String, String, String> {
+
+      @Override
+      protected String doInBackground(String... args) {
+        String token = SharedPreferencesManager.getTokenFromSharedPreferences();
+        return requestHandler.sendHttpRequest(token, "POST", URLs.URL_LOGIN_SUCCESS, new HashMap<String, String>());
+      }
+    
+      @Override
+      protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+        try {
+          //converting response to json object
+          JSONObject obj = new JSONObject(s);
+
+          //if no error in response
+          if (!obj.getBoolean("error")) {
+              Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+              //getting the user from the response
+              JSONObject userJson = obj.getJSONObject("user");
+
+              //creating a new user object
+              User user = new User(
+                      userJson.getLong("id"),
+                      userJson.getString("email"),
+                      userJson.getString("firstName"),
+                      userJson.getString("lastName")
+              );
+
+              //storing the user in shared preferences
+              SharedPreferencesManager.getInstance(getApplicationContext()).userLogin(user);
+
+              //starting the profile activity
+              finish();
+              startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+          } else {
+              Toast.makeText(getApplicationContext(), "Invalid email or password", Toast.LENGTH_SHORT).show();
+          }
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+
+    GetUserData getUserData = new GetUserData();
+    try {
+      getUserData.execute();
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+    }
+  }
 }

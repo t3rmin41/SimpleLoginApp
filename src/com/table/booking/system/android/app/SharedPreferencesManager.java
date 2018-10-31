@@ -12,6 +12,7 @@ public class SharedPreferencesManager {
   private static final String KEY_LASTNAME = "keylastname";
   private static final String KEY_EMAIL = "keyemail";
   private static final String KEY_ID = "keyid";
+  private static final String KEY_TOKEN = "keytoken";
 
   private static SharedPreferencesManager managerInstance;
   private static SharedPreferences sharedPreferences;
@@ -29,10 +30,19 @@ public class SharedPreferencesManager {
     return managerInstance;
   }
 
+  public static synchronized void putTokenToSharedPreferences(String token) {
+    SharedPreferences.Editor editor = sharedPreferences.edit();
+    editor.putString(KEY_TOKEN, token);
+    editor.apply();
+  }
+  
+  public static synchronized String getTokenFromSharedPreferences() {
+    return sharedPreferences.getString(KEY_TOKEN, null);
+  }
+  
   //method to let the user login
   //this method will store the user data in shared preferences
   public void userLogin(User user) {
-	SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
     SharedPreferences.Editor editor = sharedPreferences.edit();
     editor.putLong(KEY_ID, user.getId());
     editor.putString(KEY_FIRSTNAME, user.getFirstName());

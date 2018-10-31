@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
  
 import javax.net.ssl.HttpsURLConnection;
+import android.content.Context;
+import android.content.SharedPreferences;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RequestHandler {
@@ -48,14 +50,18 @@ public class RequestHandler {
       int status = connection.getResponseCode();
       if (HttpURLConnection.HTTP_OK == status) {
         token = connection.getHeaderField(AUTH_TOKEN_HEADER);
+        SharedPreferencesManager.putTokenToSharedPreferences(token);
       }
     } catch (MalformedURLException e) {
       e.printStackTrace();
+      throw new RuntimeException(e);
     } catch(SocketTimeoutException e) {
       //Handles URL access timeout.
       e.printStackTrace();
+      throw new RuntimeException(e);
     } catch (IOException e) {
       e.printStackTrace();
+      throw new RuntimeException(e);
     } finally {
       connection.disconnect();
     }
@@ -67,49 +73,45 @@ public class RequestHandler {
     return user;
   }
   
-  //this method will send a post request to the specified url 
-  //in this app we are using only post request 
-  //in the hashmap we have the data to be sent to the server in keyvalue pairs
-  public String sendPostRequest(String requestURL, HashMap<String, String> postDataParams) {
-      URL url;
+  public String sendHttpRequest(String token, String method, String requestURL, HashMap<String, String> requestParameters) {
+    StringBuilder sb = new StringBuilder();
+    try {
+        URL url = new URL(requestURL);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setReadTimeout(15000);
+        conn.setConnectTimeout(15000);
+        conn.setRequestMethod(method);
+        conn.setRequestProperty(AUTH_TOKEN_HEADER, token);
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
 
-      StringBuilder sb = new StringBuilder();
-      try {
-          url = new URL(requestURL);
-          HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-          conn.setReadTimeout(15000);
-          conn.setConnectTimeout(15000);
-          conn.setRequestMethod("POST");
-          conn.setDoInput(true);
-          conn.setDoOutput(true);
+        OutputStream os = conn.getOutputStream();
 
-          OutputStream os = conn.getOutputStream();
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+        writer.write(getPostDataString(requestParameters));
 
-          BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-          writer.write(getPostDataString(postDataParams));
+        writer.flush();
+        writer.close();
+        os.close();
+        int responseCode = conn.getResponseCode();
 
-          writer.flush();
-          writer.close();
-          os.close();
-          int responseCode = conn.getResponseCode();
+        if (responseCode == HttpsURLConnection.HTTP_OK) {
 
-          if (responseCode == HttpsURLConnection.HTTP_OK) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            sb = new StringBuilder();
+            String response;
 
-              BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-              sb = new StringBuilder();
-              String response;
+            while ((response = br.readLine()) != null) {
+                sb.append(response);
+            }
+        }
 
-              while ((response = br.readLine()) != null) {
-                  sb.append(response);
-              }
-          }
-
-      } catch (Exception e) {
-          e.printStackTrace();
-      }
-      return sb.toString();
+    } catch (Exception e) {
+        e.printStackTrace();
+        throw new RuntimeException(e);
+    }
+    return sb.toString();
   }
-
 
   //this method is converting keyvalue pairs data into a query string as needed to send to the server 
   private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
